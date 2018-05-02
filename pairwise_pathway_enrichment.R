@@ -40,7 +40,6 @@ HyperP[,4]=BP;
 for (i in 1:LP){
   Temp1=Path[i,];
   TempG=IntG[which(Temp1==1),];
-  mytemplist[[i]] <- TempG
   HyperP[i,1]=i;
   if (length(TempG)<2){
     

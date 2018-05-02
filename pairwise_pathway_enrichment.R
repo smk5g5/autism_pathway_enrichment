@@ -2,15 +2,15 @@ load("C:/Users/saadkhan/kegg2entrez.RData")
 #######convert gene to pathway matrix############
 kegg_pathway_matrix <- as.matrix(xtabs(~pathway_id+gene_id,data=keggpathway2gene))
 autism_gene_list <- read.table("case_control.pairs.large.txt",header = T,sep = "\t")
-mygenes <- union(mylarge_file$Entrez1,mylarge_file$Entrez2)
+uni_gene <- union(autism_gene_list$Entrez1,autism_gene_list$Entrez2)
 geneid <- as.matrix(unique(keggpathway2gene$gene_id))
 SigPairEnrich=function(autism_gene_list,geneid,uni_gene,kegg_pathway_matrix,FDR=0.05,fdrmethod=c('bonferroni')){
 #---------------------------------------------------------
 ###--Sort gene in pathway
 ###
 s=as.matrix(order(uni_gene));
-UniG=as.matrix(uni_gene[s,]);
-Path=as.matrix(path_info_mtx[,s]);
+UniG=as.matrix(uni_gene[s]);
+Path=as.matrix(kegg_pathway_matrix[,s]);
 
 #----------------------------------
 # Profile Gene in pathway

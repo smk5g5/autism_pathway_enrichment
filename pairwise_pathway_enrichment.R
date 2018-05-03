@@ -65,6 +65,24 @@ for (i in 1:LP){
   }
   p1=matrix(1-phyper(L_sigPPath-1,BPinPath,BP-BPinPath,L_sigP));
   HyperP[i,2]=p1;
+}if(fdrmethod=='BH'){
+q1=as.matrix(p.adjust(HyperP[,2],method="fdr",length(HyperP[,2])),ncol=1);
+SigPath=cbind(HyperP[,1:2],q1,HyperP[,3:6]);
+q1fdr=(q1<=FDR);
+}else if(fdrmethod=='bonferroni'){
+    Pval=FDR/LP;
+    SigPath=cbind(HyperP[,1:2],HyperP[,2],HyperP[,3:6]);
+    q1fdr=(HyperP[,2]<=Pval);
+}else if(fdrmethod=='p_value'){
+    Pval=FDR;
+    SigPath=cbind(HyperP[,1:2],HyperP[,2],HyperP[,3:6]);
+    q1fdr=(HyperP[,2]<=Pval);
 }
-return(HyperP)
+if(length(SigPath[,1])==0){
+    print("Can't find the pathway for statistically significant enrichment under the threshold value FDR!\n");
+}else{
+COL_NAME=matrix(c("pathway_index","p_value","adjusted p-value","k","n","x","m"),nrow=1)
+colnames(res)=COL_NAME;
+return(res);
+}
 } 

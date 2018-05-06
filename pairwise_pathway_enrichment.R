@@ -21,24 +21,29 @@ a=UniG %in% IntG;
 Path=Path[,a];#IntG genes in profile
 L=length(IntG);#background genes
 m=autism_gene_list[,1] %in% IntG;
+## Number of gene that intersect with intg that are there in entrez 1
 n=autism_gene_list[,2] %in% IntG;
-
+## Number of gene that intersect with intg that are there in entrez 2
 k=(m+n)==2;
+##Gene pairs that are present in the list of pathways at the same time 
 L_sigP=sum(k);#Gene pairs involved in pathway,(num of interest pairs)
 if(L_sigP==0){
     stop("There is no interest pairs involved in pathway");
 }
 BP=choose(L,2);#background pairs
+#BP is the number of all possible combinations for pairwise background genes
+#BP=nC2
 ##-----------------------------------------------------------
 #--SigP enrich
 
-LP=length(Path[,1]);#path num
+LP=length(Path[,1]);#path num #total number of pathways
 HyperP=matrix(,nrow=LP,ncol=6);#"pathway_index","p_value","adjusted p-value","k","n","m".
-HyperP[,3]=L_sigP;
-HyperP[,4]=BP;
+#create a hypergeometric distribution matrix with length LP(total number of pathways)
+HyperP[,3]=L_sigP; #(Column 3 is gene pairs involved in one of the LP pathways)
+HyperP[,4]=BP; #(#Column 4 all possible combination of background genes)
 
 for (i in 1:LP){
-  Temp1=Path[i,];
+  Temp1=Path[i,]; #
   TempG=IntG[which(Temp1==1),];
   HyperP[i,1]=i;
   if (length(TempG)<2){
@@ -48,15 +53,14 @@ for (i in 1:LP){
     HyperP[i,6]=0;
     next;
   }else{
-    BPinPath=choose(length(TempG),2);
-    HyperP[i,6]=BPinPath;
+    BPinPath=choose(length(TempG),2); #this is x which is all possible combinations of pathways that may contain these genes
+    HyperP[i,6]=BPinPath; #
     a=autism_gene_list[,1] %in% TempG;
     b=autism_gene_list[,2] %in% TempG;
     c=(a+b)==2;
     if (sum(c)==0){
       HyperP[i,2]=1;
       HyperP[i,5]=0;
-      
       next;
     }else{
       L_sigPPath=sum(c);

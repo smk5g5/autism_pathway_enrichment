@@ -50,10 +50,13 @@ for (i in 1:LP){
     Temp2=Path[j,];
   TempG1=IntG[which(Temp1==1),]; #All the genes in pathway1
   TempG2= IntG[which(Temp2==1),] #All the genes in pathway2
-  Total_genes = c(TempG1,TempG2)
-  HyperP[i,1]=i;
-  if (length(Total_genes)<2){
-    
+ TempG2_complement <- TempG2[(TempG1!=TempG2)]
+ TempG2_complement <- TempG2_complement[is.na(TempG2_complement)]      
+ TempG1_complement <- TempG1[(TempG1!=TempG2)] 
+ TempG1_complement <- TempG1_complement[is.na(TempG1_complement)]
+ Total_genes = c(TempG1_complement,TempG2_complement)
+ HyperP[i,1]=i;
+  if ((length(TempG1_complement)<1)&(length(TempG2_complement)<1)){
     HyperP[i,2]=1;
     HyperP[i,5]=0;
     HyperP[i,6]=0;
@@ -61,8 +64,8 @@ for (i in 1:LP){
   }else{
     MPinPath=choose(length(Total_genes),2); #this is x which is all possible combinations of pathways that may contain these genes
     HyperP[i,6]=BPinPath; #
-    a=autism_gene_list[,1] %in% TempG;
-    b=autism_gene_list[,2] %in% TempG;
+    a=autism_gene_list[,1] %in% TempG1_complement;
+    b=autism_gene_list[,2] %in% TempG2_complement;
     c=(a+b)==2;
     if (sum(c)==0){
       HyperP[i,2]=1;

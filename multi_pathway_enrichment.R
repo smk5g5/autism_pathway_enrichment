@@ -1,15 +1,16 @@
 load("C:/Users/saadkhan/kegg2entrez.RData")
 #######convert gene to pathway matrix############
-kegg_pathway_matrix <- as.matrix(xtabs(~pathway_id+gene_id,data=keggpathway2gene))
 autism_gene_list <- read.table("case_control.pairs.large.txt",header = T,sep = "\t")
 uni_gene <- union(autism_gene_list$Entrez1,autism_gene_list$Entrez2)
 geneid <- as.matrix(unique(keggpathway2gene$gene_id))
+subset_keggdf <- subset(keggpathway2gene, gene_id %in% uni_gene)
+kegg_pathway_matrix <- as.matrix(xtabs(~pathway_id+gene_id,data=subset_keggdf))
 SigPairEnrich=function(autism_gene_list,geneid,uni_gene,kegg_pathway_matrix,FDR=0.05,fdrmethod=c('bonferroni')){
 #---------------------------------------------------------
 ###--Sort gene in pathway
 ###
-s=as.matrix(order(uni_gene));
-UniG=as.matrix(uni_gene[s]);
+s=as.matrix(order(uni_gene)); #ordered indices of gene ids
+UniG=as.matrix(uni_gene[s]); # sorted matrix of uni_gene 
 Path=as.matrix(kegg_pathway_matrix[,s]);
 
 #----------------------------------
@@ -17,7 +18,7 @@ Path=as.matrix(kegg_pathway_matrix[,s]);
 IntG=as.matrix(sort(intersect(geneid,UniG)));#The genes involved in the pathway which contained in geneid
 #---------------------------------------
 # pathway gene in Profile
-a=UniG %in% IntG;
+a=UniG %in% IntG; #IntG is all unique genes from autism results that have KEGG pathway assigned
 Path=Path[,a];#IntG genes in profile
 L=length(IntG);#background genes
 m=autism_gene_list[,1] %in% IntG;

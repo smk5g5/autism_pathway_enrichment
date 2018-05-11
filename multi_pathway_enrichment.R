@@ -38,7 +38,8 @@ BP=choose(L,2);#background pairs
 #--SigP enrich
 
 LP=length(Path[,1]);#path num #total number of pathways
-HyperP=matrix(,nrow=LP,ncol=6);#"pathway_index","p_value","adjusted p-value","k","n","m".
+multiLP = choose(LP,2) #Total number of pairwise pathway combinations
+HyperP=matrix(,nrow=multiLP,ncol=6);#"pathway_index","p_value","adjusted p-value","k","n","m".
 #create a hypergeometric distribution matrix with length LP(total number of pathways)
 HyperP[,3]=L_sigP; #(Column 3 is gene pairs involved in one of the LP pathways)
 HyperP[,4]=BP; #(#Column 4 all possible combination of background genes)

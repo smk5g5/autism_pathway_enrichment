@@ -63,7 +63,7 @@ for (i in 1:LP){
     HyperP[j,6]=0;
     next;
   }else{
-    MPinPath=choose(length(Total_genes),2); #this is x which is all possible combinations of pathways that may contain these genes
+    BPinPath=choose(length(Total_genes),2); #this is x which is all possible combinations of pathways that may contain these genes
     HyperP[j,6]=BPinPath; #
     a=autism_gene_list[,1] %in% TempG1_complement;
     b=autism_gene_list[,2] %in% TempG2_complement;

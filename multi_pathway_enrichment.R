@@ -55,27 +55,30 @@ for (i in 1:LP){
  TempG1_complement <- TempG1[(TempG1!=TempG2)] 
  TempG1_complement <- TempG1_complement[is.na(TempG1_complement)]
  Total_genes = c(TempG1_complement,TempG2_complement)
- HyperP[i,1]=i;
+ HyperP[j,1]=j;
   if ((length(TempG1_complement)<1)&(length(TempG2_complement)<1)){
-    HyperP[i,2]=1;
-    HyperP[i,5]=0;
-    HyperP[i,6]=0;
+    HyperP[j,2]=1;
+    HyperP[j,5]=0;
+    HyperP[j,6]=0;
     next;
   }else{
     MPinPath=choose(length(Total_genes),2); #this is x which is all possible combinations of pathways that may contain these genes
-    HyperP[i,6]=BPinPath; #
+    HyperP[j,6]=BPinPath; #
     a=autism_gene_list[,1] %in% TempG1_complement;
     b=autism_gene_list[,2] %in% TempG2_complement;
     c=(a+b)==2;
     if (sum(c)==0){
-      HyperP[i,2]=1;
-      HyperP[i,5]=0;
+      HyperP[j,2]=1;
+      HyperP[j,5]=0;
       next;
     }else{
       L_sigPPath=sum(c);
-      HyperP[i,5]=L_sigPPath;
+      HyperP[j,5]=L_sigPPath;
     }
   }
   p1=matrix(1-phyper(L_sigPPath-1,BPinPath,BP-BPinPath,L_sigP));
-  HyperP[i,2]=p1;
+  HyperP[j,2]=p1;
+}
+}
+return(HyperP)
 }

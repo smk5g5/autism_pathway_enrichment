@@ -2,8 +2,8 @@ load("C:/Users/saadkhan/kegg2entrez.RData")
 #######convert gene to pathway matrix############
 autism_gene_list <- read.table("case_control.pairs.large.txt",header = T,sep = "\t")
 uni_gene <- union(autism_gene_list$Entrez1,autism_gene_list$Entrez2)
-geneid <- as.matrix(unique(keggpathway2gene$gene_id))
-subset_keggdf <- subset(keggpathway2gene, gene_id %in% uni_gene)
+geneid <- as.matrix(unique(keggpathway2gene$gene_id)) #All the unique kegg genes 
+subset_keggdf <- subset(keggpathway2gene, gene_id %in% uni_gene) #Kegg data frame of pathway to gene mapping where this is a subset of gene_id %in% uni_gene
 kegg_pathway_matrix <- as.matrix(xtabs(~pathway_id+gene_id,data=subset_keggdf))
 SigPairEnrich=function(autism_gene_list,geneid,uni_gene,kegg_pathway_matrix,FDR=0.05,fdrmethod=c('bonferroni')){
 #---------------------------------------------------------
@@ -15,15 +15,15 @@ Path=as.matrix(kegg_pathway_matrix[,s]);
 
 #----------------------------------
 # Profile Gene in pathway
-IntG=as.matrix(sort(intersect(geneid,UniG)));#The genes involved in the pathway which contained in geneid
+IntG=as.matrix(sort(intersect(geneid,UniG)));#The genes involved in the pathway which contained in geneid #353
 #---------------------------------------
 # pathway gene in Profile
 a=UniG %in% IntG; #IntG is all unique genes from autism results that have KEGG pathway assigned
 Path=Path[,a];#IntG genes in profile
 L=length(IntG);#background genes
-m=autism_gene_list[,1] %in% IntG;
+m=autism_gene_list[,1] %in% IntG; #order may be important
 ## Number of gene that intersect with intg that are there in entrez 1
-n=autism_gene_list[,2] %in% IntG;
+n=autism_gene_list[,2] %in% IntG; #
 ## Number of gene that intersect with intg that are there in entrez 2
 k=(m+n)==2;
 ##Gene pairs that are present in the list of pathways at the same time 
@@ -55,7 +55,7 @@ for (i in 1:LP){
  TempG2_complement <- TempG2_complement[is.na(TempG2_complement)]      
  TempG1_complement <- TempG1[(TempG1!=TempG2)] 
  TempG1_complement <- TempG1_complement[is.na(TempG1_complement)]
- Total_genes = c(TempG1_complement,TempG2_complement)
+ Total_genes = c(TempG1_complement,TempG2_complement) #I can still have all the genes 
  HyperP[j,1]=j;
   if ((length(TempG1_complement)<1)&(length(TempG2_complement)<1)){
     HyperP[j,2]=1;

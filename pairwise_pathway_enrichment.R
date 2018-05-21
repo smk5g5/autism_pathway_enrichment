@@ -78,7 +78,7 @@ pathway_info <- pathway_info[selpathnames]
 q1=as.matrix(p.adjust(HyperP[,2],method="BH",length(HyperP[,2])),ncol=1);
 SigPath=cbind(HyperP[,1:2],q1,HyperP[,3:6]);
 q1fdr=(q1<=FDR);
-SigPath_info=pathway_info[q1fdr,];
+SigPath_info=pathway_info[q1fdr];
 SigPath=SigPath[q1fdr,];
 if(length(SigPath[,1])==0){
     print("Can't find the pathway for statistically significant enrichment under the threshold value FDR!\n");

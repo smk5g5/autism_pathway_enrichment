@@ -1,10 +1,9 @@
 load("C:/Users/saadkhan/kegg2entrez.RData")
 #######convert gene to pathway matrix############
 autism_gene_list <- read.table("case_control.pairs.large.txt",header = T,sep = "\t")
-uni_gene <- union(autism_gene_list$Entrez1,autism_gene_list$Entrez2)
-geneid <- as.matrix(unique(keggpathway2gene$gene_id)) #All the unique kegg genes 
-subset_keggdf <- subset(keggpathway2gene, gene_id %in% uni_gene) #Kegg data frame of pathway to gene mapping where this is a subset of gene_id %in% uni_gene
-kegg_pathway_matrix <- as.matrix(xtabs(~pathway_id+gene_id,data=subset_keggdf))
+uni_gene <- unique(keggpathway2gene$gene_id) #uni gene should be all the genes in pathways (universal genes)
+geneid <- union(autism_gene_list$Entrez1,autism_gene_list$Entrez2) #gene id should be all unique genes in autism results 
+kegg_pathway_matrix <- as.matrix(xtabs(~pathway_id+gene_id,data=keggpathway2gene))
 SigPairEnrich=function(autism_gene_list,geneid,uni_gene,kegg_pathway_matrix,FDR=0.05,fdrmethod=c('bonferroni')){
 #---------------------------------------------------------
 ###--Sort gene in pathway
@@ -81,5 +80,21 @@ for (i in 1:LP){
   HyperP[j,2]=p1;
 }
 }
-return(HyperP)
+pathway_info <- keggList("pathway","hsa") #Getting Kegg pathway names using KEGGREST
+selpathnames <- as.character(paste("path",rownames(Path),sep=":"))
+pathway_info <- pathway_info[selpathnames]
+q1=as.matrix(p.adjust(HyperP[,2],method="BH",length(HyperP[,2])),ncol=1);
+SigPath=cbind(HyperP[,1:2],q1,HyperP[,3:6]);
+q1fdr=(q1<=FDR);
+SigPath_info=pathway_info[q1fdr];
+SigPath_info <- unname(SigPath_info)
+SigPath=SigPath[q1fdr,];
+if(length(SigPath[,1])==0){
+    print("Can't find the pathway for statistically significant enrichment under the threshold value FDR!\n");
+}
+else{
+res=as.data.frame(cbind(SigPath_info,SigPath));
+colnames(res)=c("pathway_name","pathway_index","p_value","adjusted p-value","k","n","x","m")
+return(res);
+}
 }

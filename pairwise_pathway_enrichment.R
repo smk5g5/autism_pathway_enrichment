@@ -85,9 +85,8 @@ if(length(SigPath[,1])==0){
     print("Can't find the pathway for statistically significant enrichment under the threshold value FDR!\n");
 }
 else{
-res=cbind(SigPath_info,SigPath);
-COL_NAME=matrix(c("pathway_name","pathway_index","p_value","adjusted p-value","k","n","x","m"),nrow=1)
-colnames(SigPath)=COL_NAME;
-return(SigPath);
+res=as.data.frame(cbind(SigPath_info,SigPath));
+colnames(res)=c("pathway_name","pathway_index","p_value","adjusted p-value","k","n","x","m")
+return(res);
 }
 } 

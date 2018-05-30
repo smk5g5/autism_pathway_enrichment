@@ -97,21 +97,21 @@ for(i in 1:multiLP){
   HyperP[i,2]=p1;
 }
 }
-pathway_info <- keggList("pathway","hsa") #Getting Kegg pathway names using KEGGREST
-selpathnames <- as.character(paste("path",rownames(Path),sep=":"))
-pathway_info <- pathway_info[selpathnames]
+#pathway_info <- keggList("pathway","hsa") #Getting Kegg pathway names using KEGGREST
+#selpathnames <- as.character(paste("path",rownames(Path),sep=":"))
+#pathway_info <- pathway_info[selpathnames]
 q1=as.matrix(p.adjust(HyperP[,2],method="BH",length(HyperP[,2])),ncol=1);
-SigPath=cbind(HyperP[,1:2],q1,HyperP[,3:6]);
+SigPath=cbind(HyperP[,1:2],q1,HyperP[,3:8]);
 q1fdr=(q1<=FDR);
-SigPath_info=pathway_info[q1fdr];
-SigPath_info <- unname(SigPath_info)
+#SigPath_info=pathway_info[q1fdr];
+#SigPath_info <- unname(SigPath_info)
 SigPath=SigPath[q1fdr,];
 if(length(SigPath[,1])==0){
     print("Can't find the pathway for statistically significant enrichment under the threshold value FDR!\n");
 }
 else{
-res=as.data.frame(cbind(SigPath_info,SigPath));
-colnames(res)=c("pathway_name","pathway_index","p_value","adjusted p-value","k","n","x","m")
+res=as.data.frame(SigPath);
+colnames(res)=c("pathway_index","p_value","adjusted p-value","k","n","x","m","pathway1","pathway2")
 return(res);
 }
 }
